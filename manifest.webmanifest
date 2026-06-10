@@ -1,0 +1,20 @@
+{
+  "name": "KETO — Keto Tracker",
+  "short_name": "Keto",
+  "description": "音声と写真で食事を記録し、健康情報を踏まえてケトーシスをサポートするAIアプリ",
+  "lang": "ja",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0A0E16",
+  "theme_color": "#0A0E16",
+  "icons": [
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

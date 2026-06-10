@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keto — Android UI Mock</title>
+<style>
+/* ============================================================
+   Keto — Android App UI Mockup  (Oura-inspired)
+   - Deep midnight navy ground, near-borderless cards
+   - Glowing gradient rings (SVG), ultra-light numerals
+   - Uppercase micro-labels with wide tracking
+   - Muted teal / ice-blue accents, restrained color
+   ============================================================ */
+:root {
+  --bg-0: #0A0E16;
+  --bg-1: #0E1420;
+  --bg-2: #141C2B;
+  --card: #161E2E;
+  --card-2: #1B2435;
+  --line: rgba(255,255,255,.06);
+  --txt: #EAF0F6;
+  --txt-2: #93A0B4;
+  --txt-3: #5C6A80;
+  --teal: #63D8CC;
+  --ice: #59B7E8;
+  --gold: #D8B36A;
+  --coral: #E8857A;
+  --good: #63D8CC;
+  --r-lg: 22px; --r-md: 16px;
+  --sans: "Segoe UI", Roboto, -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #05070C; font-family: var(--sans); color: var(--txt); padding: 48px 32px; }
+.gallery-head { max-width: 1700px; margin: 0 auto 40px; }
+.gallery-head h1 { font-weight: 200; font-size: 30px; letter-spacing: .14em; color: #EAF0F6; }
+.gallery-head h1 b { font-weight: 600; color: var(--teal); }
+.gallery-head p { color: var(--txt-3); margin-top: 10px; font-size: 13px; max-width: 700px; line-height: 1.8; letter-spacing: .04em; }
+.gallery { display: flex; gap: 36px; max-width: 1700px; margin: 0 auto; overflow-x: auto; padding-bottom: 24px; }
+.screen-col { flex: 0 0 auto; }
+.screen-label { color: var(--txt-3); font-size: 11px; margin: 0 0 14px 8px; letter-spacing: .22em; text-transform: uppercase; }
+.screen-label b { color: var(--txt-2); font-weight: 600; margin-right: 10px; }
+
+/* ---- phone frame ---- */
+.phone {
+  width: 380px; height: 822px;
+  background: linear-gradient(178deg, var(--bg-1) 0%, var(--bg-0) 55%, #080B12 100%);
+  border-radius: 42px; border: 9px solid #000;
+  box-shadow: 0 40px 90px rgba(0,0,0,.75);
+  overflow: hidden; position: relative;
+  display: flex; flex-direction: column;
+}
+.statusbar { height: 38px; flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; font-size: 11.5px; font-weight: 500; color: var(--txt-2); position: relative; }
+.statusbar .pill { width: 72px; height: 20px; background: #000; border-radius: 11px; position: absolute; left: 50%; transform: translateX(-50%); top: 9px; }
+.content { flex: 1 1 auto; overflow: hidden; padding: 8px 20px 0; display: flex; flex-direction: column; gap: 16px; }
+
+/* ---- bottom nav ---- */
+.bottomnav { flex: 0 0 auto; height: 74px; background: rgba(10,14,22,.92);
+  border-top: 1px solid var(--line); display: flex; align-items: flex-start; justify-content: space-around; padding: 12px 6px 0; }
+.nav-item { display: flex; flex-direction: column; align-items: center; gap: 5px; font-size: 9.5px; letter-spacing: .12em; color: var(--txt-3); width: 62px; }
+.nav-item svg { width: 21px; height: 21px; stroke: var(--txt-3); fill: none; stroke-width: 1.5; }
+.nav-item.active { color: var(--teal); }
+.nav-item.active svg { stroke: var(--teal); }
+
+/* ---- type ---- */
+.h-row { display: flex; align-items: baseline; justify-content: space-between; padding: 8px 2px 0; }
+.h1 { font-size: 21px; font-weight: 300; letter-spacing: .06em; }
+.date { font-size: 11px; color: var(--txt-3); letter-spacing: .18em; text-transform: uppercase; }
+.micro { font-size: 10px; letter-spacing: .22em; color: var(--txt-3); text-transform: uppercase; font-weight: 600; }
+.card { background: linear-gradient(170deg, var(--card-2), var(--card)); border: 1px solid var(--line);
+  border-radius: var(--r-lg); padding: 18px 18px 16px; }
+
+/* ---- hero ring ---- */
+.hero { display: flex; flex-direction: column; align-items: center; padding: 8px 0 0; }
+.ringbox { position: relative; width: 218px; height: 218px; }
+.ringbox svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.ringbox .center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.ringbox .num { font-size: 56px; font-weight: 100; letter-spacing: .02em; line-height: 1; }
+.ringbox .num small { font-size: 16px; font-weight: 300; color: var(--txt-2); }
+.ringbox .cap { margin-top: 8px; font-size: 10px; letter-spacing: .26em; color: var(--txt-2); text-transform: uppercase; }
+.hero .state { margin-top: 14px; display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--teal); letter-spacing: .06em; }
+.hero .state .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 12px var(--teal); }
+.hero .sub { margin-top: 4px; font-size: 11.5px; color: var(--txt-3); }
+
+/* ---- date nav + PFC card (新トップ) ---- */
+.date-nav-m { display: flex; align-items: center; gap: 10px; margin-top: 2px; }
+.date-nav-m .arw { width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,.04); border: 1px solid var(--line); display: flex; align-items: center; justify-content: center; color: var(--txt-2); font-size: 18px; }
+.date-nav-m .arw.dim { opacity: .3; }
+.date-nav-m .dlabel { flex: 1; text-align: center; font-size: 14px; font-weight: 300; letter-spacing: .06em; }
+.pfc { padding: 15px 14px 17px; }
+.pfc-head { display: flex; justify-content: space-between; align-items: baseline; padding: 0 2px 8px; }
+.pfc-head .mlabel { font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--txt-3); font-weight: 600; }
+.pfc-head .pcal { font-size: 13px; color: var(--txt-2); font-weight: 300; }
+.mrings { display: flex; justify-content: space-around; gap: 6px; }
+.mr { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 7px; }
+.mrbox { position: relative; width: 96px; height: 96px; }
+.mrbox svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.mrv { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 200; }
+.mrv small { font-size: 10px; color: var(--txt-2); margin-left: 1px; }
+.mrn { font-size: 9.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--txt-3); }
+.mrt { font-size: 12px; color: var(--txt-2); font-weight: 300; }
+.kmini { padding: 12px 16px; display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--teal); letter-spacing: .05em; }
+.kmini .kdot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 12px var(--teal); }
+.edit-amt { margin-top: 10px; text-align: center; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--teal); }
+
+/* ---- score row (3 mini rings) ---- */
+.scores { display: flex; justify-content: space-between; padding: 0 4px; }
+.score { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.mini-ring { position: relative; width: 76px; height: 76px; }
+.mini-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.mini-ring .v { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 21px; font-weight: 200; }
+.score .l { font-size: 9.5px; letter-spacing: .18em; color: var(--txt-3); text-transform: uppercase; }
+
+/* ---- list rows ---- */
+.rows { display: flex; flex-direction: column; }
+.row { display: flex; align-items: center; gap: 14px; padding: 13px 2px; border-bottom: 1px solid var(--line); }
+.row:last-child { border-bottom: none; }
+.row .ic { width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,.05); display: flex; align-items: center; justify-content: center; }
+.row .ic svg { width: 16px; height: 16px; stroke: var(--txt-2); fill: none; stroke-width: 1.6; }
+.row .body { flex: 1; }
+.row .t { font-size: 13.5px; font-weight: 400; letter-spacing: .02em; }
+.row .s { font-size: 11px; color: var(--txt-3); margin-top: 2px; }
+.row .val { font-size: 15px; font-weight: 200; letter-spacing: .04em; }
+.row .val small { font-size: 10px; color: var(--txt-3); }
+
+/* ---- streak strip ---- */
+.strip { display: flex; gap: 12px; }
+.cell { flex: 1; background: linear-gradient(170deg, var(--card-2), var(--card)); border: 1px solid var(--line); border-radius: var(--r-md); padding: 14px 16px; }
+.cell .n { font-size: 26px; font-weight: 100; }
+.cell .n small { font-size: 11px; font-weight: 400; color: var(--txt-3); margin-left: 2px; }
+.cell .l { font-size: 9.5px; letter-spacing: .18em; color: var(--txt-3); text-transform: uppercase; margin-top: 4px; }
+
+/* ---- log screen ---- */
+.topbar { display: flex; align-items: center; justify-content: space-between; padding-top: 8px; }
+.topbar .ttl { font-size: 16px; font-weight: 300; letter-spacing: .14em; text-transform: uppercase; }
+.topbar .x { color: var(--txt-3); font-size: 18px; font-weight: 200; }
+.photo { border-radius: var(--r-lg); overflow: hidden; position: relative; height: 230px;
+  background: radial-gradient(120% 90% at 30% 20%, #1E2A3D, #0D1320 70%);
+  display: flex; align-items: center; justify-content: center; border: 1px solid var(--line); }
+.plate { width: 138px; height: 138px; border-radius: 50%;
+  background: radial-gradient(circle at 36% 30%, #2E4A46, #1C302F 55%, #14222A);
+  box-shadow: 0 18px 50px rgba(0,0,0,.6), inset 0 0 0 1px rgba(255,255,255,.05); position: relative; }
+.plate::after { content: ""; position: absolute; inset: 18px; border-radius: 50%; border: 1px solid rgba(255,255,255,.08); }
+.photo .tag { position: absolute; bottom: 14px; left: 14px; right: 14px; display: flex; align-items: center; gap: 8px;
+  background: rgba(8,12,20,.72); border: 1px solid var(--line); backdrop-filter: blur(8px);
+  border-radius: 12px; padding: 10px 13px; font-size: 11.5px; color: var(--txt-2); letter-spacing: .03em; }
+.photo .tag .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 8px var(--teal); }
+.seg { display: flex; gap: 6px; }
+.seg div { flex: 1; text-align: center; padding: 9px 0; font-size: 11px; letter-spacing: .12em; border-radius: 10px;
+  color: var(--txt-3); border: 1px solid transparent; }
+.seg .on { color: var(--txt); background: rgba(99,216,204,.08); border-color: rgba(99,216,204,.35); }
+.voice { display: flex; flex-direction: column; align-items: center; padding: 20px 0 6px; }
+.micring { position: relative; width: 120px; height: 120px; display: flex; align-items: center; justify-content: center; }
+.micring .halo { position: absolute; inset: 0; border-radius: 50%;
+  background: radial-gradient(circle, rgba(99,216,204,.16) 0%, rgba(99,216,204,0) 68%); }
+.micring .core { width: 66px; height: 66px; border-radius: 50%;
+  background: linear-gradient(150deg, #2AA39A, #155E62);
+  box-shadow: 0 0 28px rgba(99,216,204,.4), inset 0 1px 0 rgba(255,255,255,.18);
+  display: flex; align-items: center; justify-content: center; }
+.micring .core svg { width: 24px; height: 24px; stroke: #DFF7F4; fill: none; stroke-width: 1.6; }
+.micring .arc { position: absolute; inset: 6px; border-radius: 50%; border: 1px solid rgba(99,216,204,.35);
+  border-top-color: var(--teal); }
+.voice .lab { margin-top: 14px; font-size: 10px; letter-spacing: .3em; color: var(--teal); text-transform: uppercase; }
+.transcript { width: 100%; margin-top: 16px; background: rgba(255,255,255,.03); border: 1px solid var(--line);
+  border-radius: var(--r-md); padding: 14px 16px; font-size: 13.5px; line-height: 1.9; color: var(--txt-2); font-weight: 300; }
+.transcript .caret { display: inline-block; width: 1.5px; height: 15px; background: var(--teal); vertical-align: -2px; margin-left: 3px; }
+.cta { border-radius: 14px; text-align: center; padding: 16px; font-size: 12.5px; font-weight: 600; letter-spacing: .2em;
+  text-transform: uppercase; color: #06231F;
+  background: linear-gradient(135deg, #7BE3D6, #3FAFA3); box-shadow: 0 10px 30px rgba(99,216,204,.25); }
+.ghost { border-radius: 14px; text-align: center; padding: 14px; font-size: 11px; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--txt-2); border: 1px solid var(--line); }
+
+/* ---- result ---- */
+.macro4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--line); border-radius: var(--r-md); overflow: hidden; border: 1px solid var(--line); }
+.m4 { background: var(--card); padding: 14px 4px; text-align: center; }
+.m4 b { display: block; font-size: 18px; font-weight: 200; letter-spacing: .02em; }
+.m4 span { font-size: 8.5px; letter-spacing: .16em; color: var(--txt-3); text-transform: uppercase; }
+.m4.hl b { color: var(--teal); }
+.fbq { font-size: 13.5px; line-height: 2.0; color: var(--txt-2); font-weight: 300; margin-top: 10px; }
+.fbq b { color: var(--txt); font-weight: 500; }
+.context { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+.ctx { font-size: 9.5px; letter-spacing: .1em; color: var(--txt-3); border: 1px solid var(--line); border-radius: 999px; padding: 5px 10px; }
+
+/* ---- progress ---- */
+.range { display: flex; gap: 22px; padding: 0 4px; }
+.range span { font-size: 11px; letter-spacing: .2em; color: var(--txt-3); padding-bottom: 6px; }
+.range .on { color: var(--txt); border-bottom: 1.5px solid var(--teal); }
+.bignum { display: flex; align-items: baseline; gap: 10px; margin-top: 4px; }
+.bignum .v { font-size: 38px; font-weight: 100; letter-spacing: .01em; }
+.bignum .v small { font-size: 14px; font-weight: 300; color: var(--txt-3); }
+.bignum .d { font-size: 11px; color: var(--teal); letter-spacing: .08em; }
+svg.chart { display: block; width: 100%; margin-top: 6px; }
+.lgnd { display: flex; gap: 18px; margin-top: 10px; }
+.lgnd span { font-size: 10px; letter-spacing: .14em; color: var(--txt-3); text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
+.lgnd i { width: 14px; height: 2px; display: inline-block; border-radius: 2px; }
+.weekbar { display: flex; align-items: flex-end; gap: 8px; height: 78px; margin-top: 14px; }
+.weekbar .wb { flex: 1; border-radius: 4px; background: rgba(255,255,255,.06); }
+.weekbar .wb.on { background: linear-gradient(180deg, #7BE3D6, #2E8F86); box-shadow: 0 0 14px rgba(99,216,204,.25); }
+.weekcap { display: flex; gap: 8px; margin-top: 8px; }
+.weekcap span { flex: 1; text-align: center; font-size: 9px; letter-spacing: .1em; color: var(--txt-3); }
+
+/* ---- coach ---- */
+.coach-msg { font-size: 14px; line-height: 2.05; color: var(--txt-2); font-weight: 300; }
+.coach-msg b { color: var(--txt); font-weight: 500; }
+.coach-msg .hl { color: var(--teal); }
+.focus { display: flex; flex-direction: column; gap: 0; }
+.focus .f { display: flex; gap: 14px; padding: 12px 2px; border-bottom: 1px solid var(--line); align-items: baseline; }
+.focus .f:last-child { border-bottom: none; }
+.focus .no { font-size: 11px; color: var(--teal); font-weight: 600; letter-spacing: .1em; }
+.focus .tx { font-size: 13px; color: var(--txt-2); line-height: 1.7; font-weight: 300; }
+.alert { border-left: 2px solid var(--coral); }
+.alert .micro { color: var(--coral); }
+.alert p { font-size: 12.5px; color: var(--txt-2); line-height: 1.9; margin-top: 8px; font-weight: 300; }
+</style>
+</head>
+<body>
+
+<div class="gallery-head">
+  <h1>KETO <b>/ Android UI</b></h1>
+  <p>Ouraに範を取ったデザイン言語 — ミッドナイトネイビーの地、発光するグラデーションリング、ウルトラライトの数字、トラッキングの広いマイクロラベル。色は抑制し、ティールの一点のみで「良い状態」を語らせる。</p>
+</div>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="gTeal" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#7BE3D6"/><stop offset="1" stop-color="#2E8F86"/>
+    </linearGradient>
+    <linearGradient id="gIce" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8FD4F5"/><stop offset="1" stop-color="#2E7FB0"/>
+    </linearGradient>
+    <linearGradient id="gGold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#EBD29A"/><stop offset="1" stop-color="#A87F3E"/>
+    </linearGradient>
+    <linearGradient id="fillTeal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#63D8CC" stop-opacity=".22"/><stop offset="1" stop-color="#63D8CC" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+</svg>
+
+<div class="gallery">
+
+<!-- ============ 1. HOME ============ -->
+<div class="screen-col">
+  <p class="screen-label"><b>01</b>Home — Today</p>
+  <div class="phone">
+    <div class="statusbar"><span>9:41</span><span class="pill"></span><span>100%</span></div>
+    <div class="content">
+      <div class="date-nav-m">
+        <div class="arw">‹</div>
+        <div class="dlabel">Today · 6.10 WED</div>
+        <div class="arw dim">›</div>
+      </div>
+
+      <div class="card pfc">
+        <div class="pfc-head">
+          <span class="mlabel">Today's Macros</span>
+          <span class="pcal">1,240 / 1,820 kcal</span>
+        </div>
+        <div class="mrings">
+          <div class="mr">
+            <div class="mrbox">
+              <svg viewBox="0 0 96 96"><circle cx="48" cy="48" r="40" stroke="rgba(255,255,255,.06)" stroke-width="7" fill="none"/><circle cx="48" cy="48" r="40" stroke="url(#gIce)" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="60"/></svg>
+              <div class="mrv">74<small>g</small></div>
+            </div>
+            <div class="mrn">Protein</div><div class="mrt">/ 98 g</div>
+          </div>
+          <div class="mr">
+            <div class="mrbox">
+              <svg viewBox="0 0 96 96"><circle cx="48" cy="48" r="40" stroke="rgba(255,255,255,.06)" stroke-width="7" fill="none"/><circle cx="48" cy="48" r="40" stroke="url(#gGold)" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="75"/></svg>
+              <div class="mrv">96<small>g</small></div>
+            </div>
+            <div class="mrn">Fat</div><div class="mrt">/ 138 g</div>
+          </div>
+          <div class="mr">
+            <div class="mrbox">
+              <svg viewBox="0 0 96 96"><circle cx="48" cy="48" r="40" stroke="rgba(255,255,255,.06)" stroke-width="7" fill="none"/><circle cx="48" cy="48" r="40" stroke="url(#gTeal)" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="251" stroke-dashoffset="94" style="filter: drop-shadow(0 0 7px rgba(99,216,204,.5))"/></svg>
+              <div class="mrv">12.5<small>g</small></div>
+            </div>
+            <div class="mrn">Net Carbs</div><div class="mrt">/ 20 g</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card kmini"><span class="kdot"></span>最適なケトーシス · 1.8 mmol/L</div>
+
+      <div class="strip">
+        <div class="cell"><div class="n">14<small>日</small></div><div class="l">Carb Streak</div></div>
+        <div class="cell"><div class="n">5<small>日</small></div><div class="l">Training</div></div>
+        <div class="cell"><div class="n">72.4<small>kg</small></div><div class="l">Weight</div></div>
+      </div>
+    </div>
+    <div class="bottomnav">
+      <div class="nav-item active"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1z"/></svg>ホーム</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>記録</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M3 17l5-6 4 4 6-8 3 4"/></svg>進捗</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>履歴</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 01-.1 1.2l2 1.6-2 3.4-2.4-1a7 7 0 01-2 1.2L14 21h-4l-.5-2.6a7 7 0 01-2-1.2l-2.4 1-2-3.4 2-1.6A7 7 0 015 12a7 7 0 01.1-1.2l-2-1.6 2-3.4 2.4 1a7 7 0 012-1.2L10 3h4l.5 2.6a7 7 0 012 1.2l2.4-1 2 3.4-2 1.6c.06.4.1.8.1 1.2z"/></svg>設定</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 2. LOG ============ -->
+<div class="screen-col">
+  <p class="screen-label"><b>02</b>Log — Voice + Photo</p>
+  <div class="phone">
+    <div class="statusbar"><span>12:24</span><span class="pill"></span><span>100%</span></div>
+    <div class="content">
+      <div class="topbar"><div class="ttl">Log Meal</div><div class="x">✕</div></div>
+
+      <div class="photo">
+        <div class="plate"></div>
+        <div class="tag"><span class="dot"></span>サーモンとアボカドのサラダを認識</div>
+      </div>
+
+      <div class="seg"><div>朝食</div><div class="on">昼食</div><div>夕食</div><div>間食</div></div>
+
+      <div class="voice">
+        <div class="micring">
+          <div class="halo"></div>
+          <div class="arc"></div>
+          <div class="core"><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg></div>
+        </div>
+        <div class="lab">Listening</div>
+        <div class="transcript">「サーモンとアボカドのサラダ、オリーブオイル多めで。あとゆで卵をひとつ……<span class="caret"></span>」</div>
+      </div>
+
+      <div class="cta">Analyze</div>
+      <div class="ghost">テキストで入力</div>
+    </div>
+    <div class="bottomnav">
+      <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1z"/></svg>ホーム</div>
+      <div class="nav-item active"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>記録</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M3 17l5-6 4 4 6-8 3 4"/></svg>進捗</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>履歴</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 01-.1 1.2l2 1.6-2 3.4-2.4-1a7 7 0 01-2 1.2L14 21h-4l-.5-2.6a7 7 0 01-2-1.2l-2.4 1-2-3.4 2-1.6A7 7 0 015 12a7 7 0 01.1-1.2l-2-1.6 2-3.4 2.4 1a7 7 0 012-1.2L10 3h4l.5 2.6a7 7 0 012 1.2l2.4-1 2 3.4-2 1.6c.06.4.1.8.1 1.2z"/></svg>設定</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 3. RESULT ============ -->
+<div class="screen-col">
+  <p class="screen-label"><b>03</b>Analysis — Feedback</p>
+  <div class="phone">
+    <div class="statusbar"><span>12:25</span><span class="pill"></span><span>100%</span></div>
+    <div class="content">
+      <div class="topbar"><div class="ttl">Analysis</div><div class="x">✕</div></div>
+
+      <div class="hero" style="padding-top:0">
+        <div class="ringbox" style="width:178px;height:178px">
+          <svg viewBox="0 0 218 218">
+            <circle cx="109" cy="109" r="96" stroke="rgba(255,255,255,.06)" stroke-width="9" fill="none"/>
+            <circle cx="109" cy="109" r="96" stroke="url(#gTeal)" stroke-width="9" fill="none"
+              stroke-linecap="round" stroke-dasharray="603" stroke-dashoffset="85"
+              style="filter: drop-shadow(0 0 10px rgba(99,216,204,.45))"/>
+          </svg>
+          <div class="center">
+            <div class="num" style="font-size:48px">86</div>
+            <div class="cap">Keto Score</div>
+          </div>
+        </div>
+        <div class="state"><span class="dot"></span>ケトーシス維持に最適</div>
+        <div class="sub">サーモンとアボカドのサラダ、ゆで卵添え</div>
+      </div>
+
+      <div class="macro4">
+        <div class="m4"><b>520</b><span>kcal</span></div>
+        <div class="m4"><b>28</b><span>Protein g</span></div>
+        <div class="m4"><b>41</b><span>Fat g</span></div>
+        <div class="m4 hl"><b>4.2</b><span>Net Carb g</span></div>
+      </div>
+      <div class="edit-amt">✎ 量を修正する</div>
+
+      <div class="card">
+        <div class="micro">Coach</div>
+        <p class="fbq">オメガ3と良質な脂質が揃った理想的な一皿。<b>今日は筋トレ日</b>なので、夕食でタンパク質を<b>あと20g</b>上乗せすると回復が進みます。リカバリー91の好調が続いています。</p>
+        <div class="context">
+          <span class="ctx">健康プロフィール</span><span class="ctx">Oura · Readiness 91</span><span class="ctx">筋トレ 45分</span><span class="ctx">アレルギー確認済</span>
+        </div>
+      </div>
+    </div>
+    <div class="bottomnav">
+      <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1z"/></svg>ホーム</div>
+      <div class="nav-item active"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>記録</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M3 17l5-6 4 4 6-8 3 4"/></svg>進捗</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>履歴</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 01-.1 1.2l2 1.6-2 3.4-2.4-1a7 7 0 01-2 1.2L14 21h-4l-.5-2.6a7 7 0 01-2-1.2l-2.4 1-2-3.4 2-1.6A7 7 0 015 12a7 7 0 01.1-1.2l-2-1.6 2-3.4 2.4 1a7 7 0 012-1.2L10 3h4l.5 2.6a7 7 0 012 1.2l2.4-1 2 3.4-2 1.6c.06.4.1.8.1 1.2z"/></svg>設定</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 4. PROGRESS ============ -->
+<div class="screen-col">
+  <p class="screen-label"><b>04</b>Trends — Charts</p>
+  <div class="phone">
+    <div class="statusbar"><span>21:08</span><span class="pill"></span><span>100%</span></div>
+    <div class="content">
+      <div class="h-row"><div class="h1">Trends</div></div>
+      <div class="range"><span>2W</span><span class="on">1M</span><span>3M</span><span>1Y</span></div>
+
+      <div class="card">
+        <div class="micro">Weight</div>
+        <div class="bignum"><span class="v">72.4<small> kg</small></span><span class="d">−2.8 kg / 30d</span></div>
+        <svg class="chart" viewBox="0 0 320 92" height="92">
+          <path d="M0,20 C30,22 50,28 80,32 C115,37 140,34 170,42 C205,51 230,54 265,60 C290,64 305,66 320,68 L320,92 L0,92 Z" fill="url(#fillTeal)"/>
+          <path d="M0,20 C30,22 50,28 80,32 C115,37 140,34 170,42 C205,51 230,54 265,60 C290,64 305,66 320,68"
+            fill="none" stroke="#63D8CC" stroke-width="2" stroke-linecap="round"
+            style="filter: drop-shadow(0 0 6px rgba(99,216,204,.5))"/>
+          <line x1="0" y1="78" x2="320" y2="78" stroke="rgba(255,255,255,.18)" stroke-width="1" stroke-dasharray="2 5"/>
+          <circle cx="320" cy="68" r="3.5" fill="#63D8CC" style="filter: drop-shadow(0 0 6px #63D8CC)"/>
+        </svg>
+        <div class="lgnd"><span><i style="background:#63D8CC"></i>Weight</span><span><i style="background:rgba(255,255,255,.3)"></i>Goal 69.0</span></div>
+      </div>
+
+      <div class="card">
+        <div class="micro">Training — This Week 5 / 7</div>
+        <div class="weekbar">
+          <div class="wb on" style="height:60%"></div><div class="wb on" style="height:42%"></div>
+          <div class="wb" style="height:8%"></div><div class="wb on" style="height:82%"></div>
+          <div class="wb on" style="height:52%"></div><div class="wb on" style="height:68%"></div>
+          <div class="wb" style="height:8%"></div>
+        </div>
+        <div class="weekcap"><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span><span>S</span></div>
+      </div>
+
+      <div class="card">
+        <div class="micro">Recovery × Sleep</div>
+        <svg class="chart" viewBox="0 0 320 76" height="76">
+          <path d="M0,42 C40,36 70,44 105,33 C140,24 180,36 215,26 C250,20 290,24 320,16"
+            fill="none" stroke="url(#gTeal)" stroke-width="2" stroke-linecap="round"/>
+          <path d="M0,52 C45,50 75,42 110,46 C150,50 185,33 220,37 C255,40 290,29 320,31"
+            fill="none" stroke="url(#gIce)" stroke-width="2" stroke-linecap="round" opacity=".85"/>
+        </svg>
+        <div class="lgnd"><span><i style="background:#63D8CC"></i>Readiness</span><span><i style="background:#59B7E8"></i>Sleep</span></div>
+      </div>
+    </div>
+    <div class="bottomnav">
+      <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1z"/></svg>ホーム</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>記録</div>
+      <div class="nav-item active"><svg viewBox="0 0 24 24"><path d="M3 17l5-6 4 4 6-8 3 4"/></svg>進捗</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>履歴</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 01-.1 1.2l2 1.6-2 3.4-2.4-1a7 7 0 01-2 1.2L14 21h-4l-.5-2.6a7 7 0 01-2-1.2l-2.4 1-2-3.4 2-1.6A7 7 0 015 12a7 7 0 01.1-1.2l-2-1.6 2-3.4 2.4 1a7 7 0 012-1.2L10 3h4l.5 2.6a7 7 0 012 1.2l2.4-1 2 3.4-2 1.6c.06.4.1.8.1 1.2z"/></svg>設定</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 5. COACH ============ -->
+<div class="screen-col">
+  <p class="screen-label"><b>05</b>Coach — Weekly Review</p>
+  <div class="phone">
+    <div class="statusbar"><span>21:30</span><span class="pill"></span><span>100%</span></div>
+    <div class="content">
+      <div class="h-row"><div class="h1">Coach</div><div class="date">Weekly</div></div>
+
+      <div class="card">
+        <div class="micro">This Week</div>
+        <p class="coach-msg" style="margin-top:10px">2週連続で糖質目標を達成。<span class="hl">体重は計画より9日早いペース</span>です。木曜の睡眠低下後に間食が増える傾向 — その夜は<b>ナッツを手元に</b>。</p>
+      </div>
+
+      <div class="strip">
+        <div class="cell"><div class="n">−0.8<small>kg</small></div><div class="l">Weight Δ</div></div>
+        <div class="cell"><div class="n">15<small>g/日</small></div><div class="l">Avg Net Carb</div></div>
+        <div class="cell"><div class="n">5<small>回</small></div><div class="l">Training</div></div>
+      </div>
+
+      <div class="card">
+        <div class="micro">Next Week Focus</div>
+        <div class="focus" style="margin-top:6px">
+          <div class="f"><span class="no">01</span><span class="tx">夕食のタンパク質を平均 +15g</span></div>
+          <div class="f"><span class="no">02</span><span class="tx">木曜夜のスナックをナッツ系へ置き換え</span></div>
+          <div class="f"><span class="no">03</span><span class="tx">就寝90分前のスクリーンを止めて睡眠スコア90台へ</span></div>
+        </div>
+      </div>
+
+      <div class="card alert">
+        <div class="micro">Health Notes</div>
+        <p>甲殻類アレルギー登録済み — 外食メニュー分析時に自動チェック。前回健診の尿酸値がやや高め。レバー・干物の頻度に注意。</p>
+      </div>
+    </div>
+    <div class="bottomnav">
+      <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1z"/></svg>ホーム</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>記録</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24"><path d="M3 17l5-6 4 4 6-8 3 4"/></svg>進捗</div>
+      <div class="nav-item active"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg>履歴</div>
+      <div class="nav-item"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 01-.1 1.2l2 1.6-2 3.4-2.4-1a7 7 0 01-2 1.2L14 21h-4l-.5-2.6a7 7 0 01-2-1.2l-2.4 1-2-3.4 2-1.6A7 7 0 015 12a7 7 0 01.1-1.2l-2-1.6 2-3.4 2.4 1a7 7 0 012-1.2L10 3h4l.5 2.6a7 7 0 012 1.2l2.4-1 2 3.4-2 1.6c.06.4.1.8.1 1.2z"/></svg>設定</div>
+    </div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>
