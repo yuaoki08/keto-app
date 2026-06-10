@@ -3,6 +3,7 @@ import { h, toast, formatDateJP } from '../ui.js';
 import { t } from '../i18n.js';
 import { CHECKUP_METRICS } from '../store.js';
 import { putCheckup, deleteCheckup, getAllCheckups, newId } from '../db.js';
+import { pushCheckup, removeCheckup } from '../backend.js';
 import { todayKey } from '../nutrition.js';
 
 function evalStatus(metric, value) {
@@ -59,13 +60,15 @@ export async function renderCheckups(container, ctx) {
         if (v !== '' && v != null) values[m.key] = Number(v);
       }
       if (Object.keys(values).length === 0) { toast(t('c.needOne'), 'error'); return; }
-      await putCheckup({
+      const rec = {
         id: newId(),
         date: fd.get('date') || todayKey(),
         values,
         notes: fd.get('notes') || '',
         createdAt: new Date().toISOString(),
-      });
+      };
+      await putCheckup(rec);
+      pushCheckup(rec);
       toast(t('c.saved'), 'success');
       reload();
     });
@@ -78,7 +81,7 @@ export async function renderCheckups(container, ctx) {
       h('span', { class: 'day-date', text: formatDateJP(rec.date) }),
       h('button', { class: 'btn tiny danger', text: t('common.delete'), onclick: async () => {
         if (!confirm(t('hi.confirmDelete'))) return;
-        await deleteCheckup(rec.id); toast(t('hi.deleted'), 'success'); reload();
+        await deleteCheckup(rec.id); removeCheckup(rec.id); toast(t('hi.deleted'), 'success'); reload();
       } }),
     ]));
     const grid = h('div', { class: 'checkup-values' });

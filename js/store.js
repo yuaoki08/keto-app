@@ -37,6 +37,10 @@ const DEFAULT_SETTINGS = {
   // 含めなければ末尾に追記する（例: https://proxy.example/?url=）。
   ouraToken: '',
   ouraProxy: '',
+  // Supabase バックエンド（サブスク・サーバー保存・Geminiプロキシ）。
+  // URL と anon キーは公開前提の値（秘密ではない）。未設定ならBYOKで動作。
+  supabaseUrl: '',
+  supabaseAnonKey: '',
 };
 
 export function getProfile() {

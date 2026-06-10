@@ -7,6 +7,7 @@ import { analyzeMeal } from '../ai.js';
 import { putMeal, newId, getMealsByDate, getDaily, getAllCheckups } from '../db.js';
 import { todayKey, sumDay } from '../nutrition.js';
 import { resultCard } from './history.js';
+import { backendEnabled, pushMeal } from '../backend.js';
 
 const MEAL_TYPES = ['朝食', '昼食', '夕食', '間食'];
 
@@ -147,7 +148,7 @@ export function renderLog(container, ctx) {
       toast(t('l.needInput'), 'error');
       return;
     }
-    if (!settings.apiKey) {
+    if (!backendEnabled() && !settings.apiKey) {
       toast(t('l.needKeyFirst'), 'error');
       ctx.navigate('settings');
       return;
@@ -188,6 +189,7 @@ export function renderLog(container, ctx) {
         status: 'done',
       };
       await putMeal(meal);
+      pushMeal(meal); // サーバー保存（バックエンド有効時のみ・失敗は無視）
       toast(t('l.saved'), 'success');
 
       resultArea.innerHTML = '';
@@ -206,7 +208,14 @@ export function renderLog(container, ctx) {
       photoPreview.append(emptyHint());
     } catch (err) {
       resultArea.innerHTML = '';
-      resultArea.append(h('div', { class: 'card error', html: escapeHtml(err.message || t('l.analyzeFail')) }));
+      if (err && err.code === 'quota_exceeded') {
+        resultArea.append(h('div', { class: 'card warn' }, [
+          h('h3', { text: t('pw.title') }),
+          h('p', { class: 'muted', text: t('pw.body') }),
+        ]));
+      } else {
+        resultArea.append(h('div', { class: 'card error', html: escapeHtml(err.message || t('l.analyzeFail')) }));
+      }
     } finally {
       analyzeBtn.disabled = false;
       analyzeBtn.textContent = t('l.analyze');

@@ -3,6 +3,7 @@ import { h, toast } from '../ui.js';
 import { t, getLang, setLang, LANGS } from '../i18n.js';
 import { getSettings, saveSettings, MODELS } from '../store.js';
 import { getAllMeals } from '../db.js';
+import { backendConfigured, currentUser, signIn, signUp, signOut, getEntitlement } from '../backend.js';
 
 export function renderSettings(container, ctx) {
   const s = getSettings();
@@ -94,10 +95,25 @@ export function renderSettings(container, ctx) {
     URL.revokeObjectURL(url);
   });
 
+  // Supabase 接続（サブスク基盤）
+  const sUrl = h('input', { name: 'supabaseUrl', type: 'url', value: s.supabaseUrl || '', placeholder: 'https://xxxx.supabase.co', autocomplete: 'off' });
+  const sAnon = h('input', { name: 'supabaseAnonKey', type: 'text', value: s.supabaseAnonKey || '', placeholder: 'eyJhbGci... (anon public key)', autocomplete: 'off' });
+  const backendForm = h('form', { class: 'form' }, [
+    h('h2', { text: t('s.backend') }),
+    h('label', { class: 'field' }, [h('span', { class: 'field-label', text: t('s.supabaseUrl') }), sUrl]),
+    h('label', { class: 'field' }, [h('span', { class: 'field-label', text: t('s.supabaseAnon') }), sAnon,
+      h('span', { class: 'field-hint', text: t('s.backendHint') })]),
+  ]);
+  const backendSave = h('button', { class: 'btn primary', type: 'button', text: t('common.save'),
+    onclick: () => { saveSettings({ supabaseUrl: sUrl.value.trim(), supabaseAnonKey: sAnon.value.trim() }); toast(t('s.saved'), 'success'); if (ctx.rebuild) ctx.rebuild(); } });
+
   container.append(
     h('div', { class: 'view' }, [
       form,
       h('div', { class: 'form-actions' }, [saveBtn]),
+      backendForm,
+      h('div', { class: 'form-actions' }, [backendSave]),
+      buildAccount(ctx),
       h('h2', { text: t('s.health') }),
       h('div', { class: 'form-actions' }, [
         h('button', { class: 'btn', type: 'button', text: t('s.profileBtn'), onclick: () => ctx.navigate('profile') }),
@@ -111,4 +127,52 @@ export function renderSettings(container, ctx) {
       ]),
     ])
   );
+}
+
+// アカウント（ログイン/ステータス）カード
+function buildAccount(ctx) {
+  const card = h('div', { class: 'card' });
+  card.append(h('h3', { text: t('s.account') }));
+
+  if (!backendConfigured()) {
+    card.append(h('p', { class: 'muted small', text: t('a.needBackend') }));
+    return card;
+  }
+
+  const user = currentUser();
+  if (user) {
+    card.append(h('p', { class: 'muted small', text: t('a.signedInAs', { email: user.email || user.id }) }));
+    const statusLine = h('p', { class: 'muted small', text: '…' });
+    card.append(statusLine);
+    getEntitlement().then((e) => {
+      if (!e) return;
+      const st = t(`status.${e.subscription_status || 'free'}`);
+      statusLine.textContent = `${t('a.status')}: ${st} ・ ${t('a.usage')}: ${e.analyses_used || 0}`;
+    }).catch(() => {});
+    card.append(h('div', { class: 'form-actions' }, [
+      h('button', { class: 'btn', type: 'button', text: t('a.signout'), onclick: () => { signOut(); toast(t('a.signedOut'), 'success'); if (ctx.rebuild) ctx.rebuild(); } }),
+    ]));
+    return card;
+  }
+
+  // 未ログイン: メール＋パスワード
+  const email = h('input', { type: 'email', placeholder: t('a.email'), autocomplete: 'username' });
+  const pw = h('input', { type: 'password', placeholder: t('a.password'), autocomplete: 'current-password' });
+  const run = async (fn, okMsg) => {
+    try {
+      const res = await fn(email.value.trim(), pw.value);
+      if (res && res.needsConfirm) { toast(t('a.confirmEmail'), 'success'); return; }
+      toast(okMsg, 'success');
+      if (ctx.rebuild) ctx.rebuild();
+    } catch (e) { toast(t('a.authErr', { e: e.message }), 'error'); }
+  };
+  card.append(
+    h('label', { class: 'field' }, [h('span', { class: 'field-label', text: t('a.email') }), email]),
+    h('label', { class: 'field' }, [h('span', { class: 'field-label', text: t('a.password') }), pw]),
+    h('div', { class: 'form-actions' }, [
+      h('button', { class: 'btn', type: 'button', text: t('a.signup'), onclick: () => run(signUp, t('a.signupOk')) }),
+      h('button', { class: 'btn primary', type: 'button', text: t('a.signin'), onclick: () => run(async (e, p) => { await signIn(e, p); }, t('a.signinOk')) }),
+    ])
+  );
+  return card;
 }

@@ -2,6 +2,7 @@
 import { h, escapeHtml, formatDateJP, toast } from '../ui.js';
 import { t } from '../i18n.js';
 import { getMealsGroupedByDate, deleteMeal, putMeal } from '../db.js';
+import { pushMeal, removeMeal } from '../backend.js';
 import { sumDay } from '../nutrition.js';
 
 function round(n) { return Math.round((n || 0) * 10) / 10; }
@@ -85,6 +86,7 @@ export function resultCard(meal, { showPhoto = false, editable = false, onDelete
         onclick: async () => {
           if (!confirm(t('hi.confirmDelete'))) return;
           await deleteMeal(meal.id);
+          removeMeal(meal.id);
           onDelete();
         },
       }));
@@ -131,6 +133,7 @@ export function resultCard(meal, { showPhoto = false, editable = false, onDelete
               edited: true,
             };
             await putMeal(meal);
+            pushMeal(meal);
             toast(t('hi.editSaved'), 'success');
             if (onChange) onChange(meal); else render();
           },

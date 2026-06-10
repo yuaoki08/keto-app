@@ -7,6 +7,7 @@
 
 import { ketoMacroTargets, bmr, tdee, targetCalories, ketosisLevel } from './nutrition.js';
 import { aiLangInstruction, t } from './i18n.js';
+import { backendEnabled, backendAnalyze } from './backend.js';
 
 const API_URL = 'https://api.anthropic.com/v1/messages';
 
@@ -130,12 +131,27 @@ function imageBlockFromDataUrl(dataUrl) {
 }
 
 export async function analyzeMeal({ text, photoDataUrl, mealType, todayTotals, daily, latestCheckup }, profile, settings) {
+  const targets = ketoMacroTargets(profile);
+  const system = buildSystemPrompt(profile, targets, { daily, latestCheckup });
+
+  // サブスク（バックエンド）が有効ならサーバー経由のGeminiで分析（端末にAPIキー不要）
+  if (backendEnabled()) {
+    const m = photoDataUrl ? /^data:(image\/[a-zA-Z+]+);base64,(.+)$/.exec(photoDataUrl) : null;
+    const parsed = await backendAnalyze({
+      text, mealType, system, todayTotals,
+      photoMime: m ? m[1] : null,
+      photoBase64: m ? m[2] : null,
+    });
+    if (parsed && parsed.net_carbs_g == null && parsed.total_carbs_g != null) {
+      parsed.net_carbs_g = Math.max(0, (parsed.total_carbs_g || 0) - (parsed.fiber_g || 0));
+    }
+    return parsed;
+  }
+
+  // それ以外は BYOK（端末のClaudeキー）
   if (!settings.apiKey) {
     throw new Error(t('err.noKey'));
   }
-
-  const targets = ketoMacroTargets(profile);
-  const system = buildSystemPrompt(profile, targets, { daily, latestCheckup });
 
   const userContent = [];
   const img = photoDataUrl ? imageBlockFromDataUrl(photoDataUrl) : null;

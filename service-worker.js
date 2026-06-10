@@ -1,6 +1,6 @@
 // アプリシェルをキャッシュしてオフライン起動を可能にする。
 // （AI分析はネットワーク必須。記録閲覧などはオフラインでも可能。）
-const CACHE = 'keto-app-v9';
+const CACHE = 'keto-app-v10';
 const ASSETS = [
   './',
   './index.html',
@@ -15,6 +15,7 @@ const ASSETS = [
   './js/store.js',
   './js/db.js',
   './js/ai.js',
+  './js/backend.js',
   './js/i18n.js',
   './js/oura.js',
   './js/charts.js',

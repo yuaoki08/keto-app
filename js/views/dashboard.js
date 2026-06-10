@@ -10,6 +10,7 @@ import {
 } from '../nutrition.js';
 import { coachAdvice } from '../ai.js';
 import { syncOura } from '../oura.js';
+import { pushDaily } from '../backend.js';
 import { resultCard } from './history.js';
 
 // 表示・入力対象の日付（セッション内で保持）。既定は今日。
@@ -226,7 +227,8 @@ function buildConditionCard(dateKey, daily, settings, ctx, reload) {
         minutes: minutesInput.value ? Number(minutesInput.value) : null,
       },
     };
-    await upsertDaily(dateKey, patch);
+    const merged = await upsertDaily(dateKey, patch);
+    pushDaily(dateKey, merged);
     // 今日の入力のみプロフィールへ反映（目標カロリーの追従）
     if (dateKey === todayKey()) {
       if (patch.weightKg) saveProfile({ weightKg: patch.weightKg });
